@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<!--
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+Please read LICENSE, on Github, for more information.
+-->
+<html lang='en-us'>
+
+<head>
+	<meta charset='utf-8' />
+	<title>Point and Click Game Test</title>
+    <script src='../pncgame.js'></script>
+    <style type='text/css'>
+        body { background-color: black; }
+        h1, h2, p {
+            text-align: center;
+            color: white;
+        }
+        div.game_window {
+            position: relative;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            width: 250px;
+            color: white;
+            background-color: gray;
+        }
+        #game_window_img { z-index: 0; }
+        #game_window_img_map {
+            opacity: 0;
+            height: 300px;
+            width: 250px;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        img.item { position: relative; }
+        audio {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        audio.soundtrack {
+            background-color: gray;
+            padding: 1mm;
+            margin-bottom: 5mm;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Game Title</h1>
+<p>pncgame.js v1.0 &copy; David J. Kalbfleisch 2015</p>
+
+<audio class="soundtrack" controls autoplay loop>
+    <!-- TODO - Need a free tune. -->
+    <source id="audio_soundtrack" src="/home/dave/Music/mp3/Alan Parsons Project - Eye in the Sky.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+<div class="game_window">
+    <img id="game_window_img" src="testroom.svg" alt="game window">
+<!--
+The following image and map must have a higher z-index than img#game_window_img and any items.
+Otherwise, event areas will not be clickable, effectively disabling events.
+img#game_window_img_map should be positioned directly over img#game_window_img, it should have
+an empty "src" attribute, and it should be completely transparent so as not to display the
+missing image or broken link symbol.
+
+Valid HTML requires the "src" and "alt" attributes for images.  If img#game_window_img_map's
+"src" attribute is an empty string, the presense of an "alt" attribute will cause the content
+not to load properly, thereby disabling events.
+-->
+    <img id="game_window_img_map" src="testroom.svg" alt="not visible" usemap="#gamemap">
+    <map name="gamemap"></map>
+</div>
+<p id="messages">Display messages here.</p>
+
+<audio preload="none">
+    <source id="audio_fx" src="goat.mp3" type="audio/mpeg">
+Your browser does not support the audio element.
+</audio>
+
+<script>
+var game = new PointAndClickGame(
+    document.getElementById("messages"),            // Message buffer element
+    "You are in a room with a door and two picture frames.  Exit the room.",    // Initial messaeg
+    "item",                                         // CSS class name for item "img" elements
+    document.getElementById("game_window_img_map"), // Game window transparent image associated with map
+    document.getElementById("game_window_img"),     // Game window image for drawing location
+    document.getElementsByTagName("map")[0],        // Game window map for clickable events
+    document.getElementById("audio_sountrack"),     // "source" element for soundtrack audio
+    document.getElementById("audio_fx")             // "source" element for fx audio
+);
+game.fromXML("test.xml");
+document.getElementsByTagName("h1")[0].innerHTML = game.title;
+game.update();  // Start the game
+</script>
+</body>
+
+</html>

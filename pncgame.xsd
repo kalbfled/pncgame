@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+Please read LICENSE, on Github, for more information.
+
+This schema defines a valid PncGame for use with pncgame.js.
+Schema version 1.0
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+<xs:element name="PncGame">
+    <xs:complexType>
+        <xs:sequence>
+            <xs:element name="Title" type="xs:string" default="pncgame.js (CC BY-NC-SA 4.0) David J. Kalbfleisch 2015"/>
+            <xs:element name="Location" type="locationtype" maxOccurs="unbounded"/>
+            <xs:element name="PlayerStart" type="idtype" default="1"/>
+            <!-- TODO - OPTIONAL PLAYER STARTING INVENTORY -->
+            <!-- TODO - LOCATION INDEPENDENT EVENTS -->
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+<!-- Complex types -->
+<xs:complexType name="locationtype">
+    <xs:sequence>
+        <xs:element name="Description" type="xs:string" minOccurs="0"/>
+        <xs:element name="Image" type="xs:string"/>
+        <xs:element name="Item" type="itemtype" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Event" type="eventtype" minOccurs="0" maxOccurs="unbounded"/>
+        <!-- TODO - LOCATION BASED AUDIO -->
+    </xs:sequence>
+    <xs:attribute name="id" type="idtype" use="required"/>
+</xs:complexType>
+<xs:complexType name="itemtype">
+    <xs:sequence>
+        <xs:element name="Description" type="xs:string"/>
+        <xs:element name="Image" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="id" type="idtype" use="required"/>
+    <xs:attribute name="left" type="itempositiontype" use="required"/>
+    <xs:attribute name="bottom" type="itempositiontype" use="required"/>
+</xs:complexType>
+<xs:complexType name="eventtype">
+    <xs:sequence>
+        <xs:element name="Description" type="xs:string"/>
+        <xs:element name="Prerequisite" type="prerequisitetype" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="Consequence" type="consequencetype" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="shape" type="shapetype" use="required"/>
+    <xs:attribute name="coords" type="xs:string"/>
+</xs:complexType>
+<xs:complexType name="prerequisitetype">
+    <xs:simpleContent>
+        <xs:extension base="xs:integer">
+            <xs:attribute name="type" type="prerequisitetypetype" use="required"/>
+            <xs:attribute name="itemid" type="idtype" use="required"/>
+        </xs:extension>
+    </xs:simpleContent>
+</xs:complexType>
+<xs:complexType name="consequencetype">
+    <xs:simpleContent>
+        <xs:extension base="xs:string">
+            <xs:attribute name="type" type="consequencetypetype" use="required"/>
+            <xs:attribute name="itemid" type="idtype"/>
+        </xs:extension>
+    </xs:simpleContent>
+</xs:complexType>
+
+<!-- Simple types -->
+<xs:simpleType name="idtype">
+    <xs:restriction base="xs:integer">
+        <xs:minInclusive value="1"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="itempositiontype">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="(0|([1-9][0-9]*))px"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="prerequisitetypetype">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="item|noitem"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="consequencetypetype">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="audio|item|location|message"/>
+    </xs:restriction>
+</xs:simpleType>
+<xs:simpleType name="shapetype">
+    <xs:restriction base="xs:string">
+        <xs:pattern value="circle|default|poly|rect"/>
+    </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+Please read LICENSE, on Github, for more information.
+-->
+<PncGame
+xmlns="http://www.github.com/kalbfled/pncgame/pncgame.xsd">
+    <Title>Single Room Test</Title>
+    <Location id="1">
+        <Description>Test Room</Description>
+        <Image>testroom.svg</Image>
+        <Event shape="rect" coords="25,85,82,130">
+            <Description>Click on upper picture</Description>
+            <Consequence type="location">2</Consequence>
+        </Event>
+        <Event shape="rect" coords="25,170,82,217">
+            <Description>Click on lower picture</Description>
+            <Consequence type="location">3</Consequence>
+        </Event>
+        <Event shape="rect" coords="111,87,233,300">
+            <Description>Click on door without key</Description>
+            <Prerequisite type="noitem" itemid="1">0</Prerequisite>
+            <Consequence type="message">The door is locked.</Consequence>
+        </Event>
+        <Event shape="rect" coords="111,87,233,300">
+            <Description>Click on door with key</Description>
+            <Prerequisite type="item" itemid="1">0</Prerequisite>
+            <Consequence type="location">4</Consequence>
+            <Consequence type="message">You unlocked the door with the key and exited the room.  YOU WIN!</Consequence>
+            <Consequence type="audio">goat.mp3</Consequence>
+        </Event>
+    </Location>
+    <Location id="2">
+        <Description>Upper Picture</Description>
+        <Image>upper.svg</Image>
+        <Item id="1" left="26px" bottom="115px">
+            <Description>Key</Description>
+            <Image>key.svg</Image>
+        </Item>
+        <Event shape="rect" coords="30,190,112,212">
+            <Description>Pick up the key</Description>
+            <!-- The key must be in its original location. -->
+            <Prerequisite type="item" itemid="1">2</Prerequisite>
+            <!-- The player (location 0) acquires the key. -->
+            <Consequence type="item" itemid="1">0</Consequence>
+            <Consequence type="message">You picked up a key.</Consequence>
+        </Event>
+        <!-- The default event must follow all other events at the location. -->
+        <Event shape="default">  <!-- Anywhere other than the key -->
+            <Description>Return to whole room view</Description>
+            <Consequence type="location">1</Consequence>
+        </Event>
+    </Location>
+    <Location id="3">
+        <Description>Lower Picture</Description>
+        <Image>lower.svg</Image>
+        <Event shape="default">
+            <Description>Return to whole room view</Description>
+            <Consequence type="location">1</Consequence>
+        </Event>
+    </Location>
+    <Location id="4">
+        <Description>Goal</Description>
+        <Image>goal.svg</Image>
+    </Location>
+</PncGame>
