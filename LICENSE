@@ -1,0 +1,38 @@
+8 September 2015
+
+pncgame.js and related files
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+
+
+NON-COMMERCIAL USE
+------------------
+
+This software is free for non-commercial use, including the development of derived software,
+provided you give credit to the author, release any derived software or other products
+under the same license, and include a copy of this file with any software or other products
+you distribute.  Please attribute conspicuously as follows:
+----------------------------------------------------
+pncgame.js and related software (CC BY-NC-SA 4.0) David J. Kalbfleisch 2015.  Some uses are
+permitted.  For more information, please visit https://github.com/kalbfled/pncgame and
+https://creativecommons.org/licenses/by-nc-sa/4.0/.
+----------------------------------------------------
+"Conspicuous attribution" means that the notice is plainly visible to the end user rather than
+buried in source code (i.e. it appears on a webpage or splash screen).  Please make the URLs
+hyperlinks whenever possible.
+
+
+COMMERCIAL USE
+--------------
+If you would like to use this software for commercial purposes, please contact the author using
+the following link to obtain an appropriate license.
+
+http://www.purdone.com/dave/contact.php
+
+"Commercial purposes" include, but are not limited to, using this software on any webpage that
+shows advertisements, including advertisements placed by third parties (i.e. Google), and wrapping
+the software in a mobile application using native code.
+
+Please respect this license and the time the author has spent developing this code.  If you are
+a casual developer with modest ambitions, the author is not going to charge you an arm and a leg.

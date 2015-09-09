@@ -14,11 +14,13 @@ Schema version 1.0
     <xs:complexType>
         <xs:sequence>
             <xs:element name="Title" type="xs:string" default="pncgame.js (CC BY-NC-SA 4.0) David J. Kalbfleisch 2015"/>
+            <xs:element name="PlayerInventory" type="inventorytype" minOccurs="0"/>
             <xs:element name="Location" type="locationtype" maxOccurs="unbounded"/>
             <xs:element name="PlayerStart" type="idtype" default="1"/>
-            <!-- TODO - OPTIONAL PLAYER STARTING INVENTORY -->
             <!-- TODO - LOCATION INDEPENDENT EVENTS -->
         </xs:sequence>
+        <!-- The version of this XSD the PncGame targets -->
+        <xs:attribute name="version" type="xs:string"/>
     </xs:complexType>
 </xs:element>
 
@@ -33,14 +35,31 @@ Schema version 1.0
     </xs:sequence>
     <xs:attribute name="id" type="idtype" use="required"/>
 </xs:complexType>
+<xs:complexType name="inventorytype">
+    <xs:sequence>
+        <xs:element name="Item" type="itemtype" maxOccurs="unbounded"/>
+    </xs:sequence>
+</xs:complexType>
 <xs:complexType name="itemtype">
     <xs:sequence>
         <xs:element name="Description" type="xs:string"/>
         <xs:element name="Image" type="xs:string"/>
+        <xs:element name="Interaction" type="idtype" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="id" type="idtype" use="required"/>
-    <xs:attribute name="left" type="itempositiontype" use="required"/>
-    <xs:attribute name="bottom" type="itempositiontype" use="required"/>
+    <!--
+    These attributes are parameters to the HTML5 canvas context drawImage method.  Most are
+    not required because an item might never be drawn on the canvas.
+        http://www.w3schools.com/tags/canvas_drawimage.asp
+    -->
+    <xs:attribute name="sx" type="nonNegativeInteger" use="required"/>
+    <xs:attribute name="sy" type="nonNegativeInteger" use="required"/>
+    <xs:attribute name="swidth" type="nonNegativeInteger"/>
+    <xs:attribute name="sheight" type="nonNegativeInteger"/>
+    <xs:attribute name="x" type="nonNegativeInteger"/>
+    <xs:attribute name="y" type="nonNegativeInteger"/>
+    <xs:attribute name="width" type="nonNegativeInteger"/>
+    <xs:attribute name="height" type="nonNegativeInteger"/>
 </xs:complexType>
 <xs:complexType name="eventtype">
     <xs:sequence>
@@ -49,6 +68,7 @@ Schema version 1.0
         <xs:element name="Consequence" type="consequencetype" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="shape" type="shapetype" use="required"/>
+    <!-- TODO - I could make the type for coords more restrictive with a regex. -->
     <xs:attribute name="coords" type="xs:string"/>
 </xs:complexType>
 <xs:complexType name="prerequisitetype">
@@ -74,11 +94,6 @@ Schema version 1.0
         <xs:minInclusive value="1"/>
     </xs:restriction>
 </xs:simpleType>
-<xs:simpleType name="itempositiontype">
-    <xs:restriction base="xs:string">
-        <xs:pattern value="(0|([1-9][0-9]*))px"/>
-    </xs:restriction>
-</xs:simpleType>
 <xs:simpleType name="prerequisitetypetype">
     <xs:restriction base="xs:string">
         <xs:pattern value="item|noitem"/>
@@ -86,7 +101,7 @@ Schema version 1.0
 </xs:simpleType>
 <xs:simpleType name="consequencetypetype">
     <xs:restriction base="xs:string">
-        <xs:pattern value="audio|item|location|message"/>
+        <xs:pattern value="audio|custom|item|location|message"/>
     </xs:restriction>
 </xs:simpleType>
 <xs:simpleType name="shapetype">

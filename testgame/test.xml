@@ -4,65 +4,98 @@
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 https://github.com/kalbfled/pncgame
 Please read LICENSE, on Github, for more information.
+
+This game references image and audio resources not included with the source.
+To see the demo in action, visit http://www.purdone.com/dave/pncgame/.
 -->
-<PncGame
-xmlns="http://www.github.com/kalbfled/pncgame/pncgame.xsd">
+<PncGame xmlns="http://www.github.com/kalbfled/pncgame/pncgame.xsd">
     <Title>Single Room Test</Title>
+    <PlayerInventory>
+        <Item id="2" sx="140" sy="0">
+            <Description>Copper Key</Description>
+            <Image>items.svg</Image>
+        </Item>
+        <Item id="3" sx="0" sy="0">
+            <Description>Locked Padlock</Description>
+            <Image>items.svg</Image>
+            <!-- Item interactions are not symmetrical. The receiving/target item contains the "interaction" element. -->
+            <Interaction>2</Interaction>
+        </Item>
+    </PlayerInventory>
     <Location id="1">
         <Description>Test Room</Description>
-        <Image>testroom.svg</Image>
-        <Event shape="rect" coords="25,85,82,130">
-            <Description>Click on upper picture</Description>
+        <Image>testroom.jpg</Image>
+        <Event shape="rect" coords="35,134,68,178">
+            <Description>Click on left picture</Description>
             <Consequence type="location">2</Consequence>
         </Event>
-        <Event shape="rect" coords="25,170,82,217">
-            <Description>Click on lower picture</Description>
+        <Event shape="rect" coords="87,134,120,178">
+            <Description>Click on right picture</Description>
             <Consequence type="location">3</Consequence>
         </Event>
-        <Event shape="rect" coords="111,87,233,300">
-            <Description>Click on door without key</Description>
-            <Prerequisite type="noitem" itemid="1">0</Prerequisite>
-            <Consequence type="message">The door is locked.</Consequence>
-        </Event>
-        <Event shape="rect" coords="111,87,233,300">
-            <Description>Click on door with key</Description>
-            <Prerequisite type="item" itemid="1">0</Prerequisite>
+        <Event shape="rect" coords="55,94,100,127">
+            <Description>Click on upper picture</Description>
             <Consequence type="location">4</Consequence>
-            <Consequence type="message">You unlocked the door with the key and exited the room.  YOU WIN!</Consequence>
-            <Consequence type="audio">goat.mp3</Consequence>
+        </Event>
+        <Event shape="rect" coords="138,103,221,283">
+            <Description>Click on door</Description>
+            <!-- Custom consequences must be implemented manually. -->
+            <Consequence type="custom"></Consequence>
         </Event>
     </Location>
     <Location id="2">
-        <Description>Upper Picture</Description>
-        <Image>upper.svg</Image>
-        <Item id="1" left="26px" bottom="115px">
-            <Description>Key</Description>
-            <Image>key.svg</Image>
-        </Item>
-        <Event shape="rect" coords="30,190,112,212">
-            <Description>Pick up the key</Description>
-            <!-- The key must be in its original location. -->
-            <Prerequisite type="item" itemid="1">2</Prerequisite>
-            <!-- The player (location 0) acquires the key. -->
-            <Consequence type="item" itemid="1">0</Consequence>
-            <Consequence type="message">You picked up a key.</Consequence>
-        </Event>
-        <!-- The default event must follow all other events at the location. -->
-        <Event shape="default">  <!-- Anywhere other than the key -->
+        <Description>Left Picture</Description>
+        <Image>left.jpg</Image>
+        <Event shape="default">
             <Description>Return to whole room view</Description>
             <Consequence type="location">1</Consequence>
         </Event>
     </Location>
     <Location id="3">
-        <Description>Lower Picture</Description>
-        <Image>lower.svg</Image>
+        <Description>Right Picture</Description>
+        <Image>right.jpg</Image>
         <Event shape="default">
             <Description>Return to whole room view</Description>
             <Consequence type="location">1</Consequence>
         </Event>
     </Location>
     <Location id="4">
+        <Description>Upper Picture Closed</Description>
+        <Image>upper_closed.jpg</Image>
+        <Event shape="rect" coords="17,47,229,203">
+            <Description>Open the picture frame</Description>
+            <Consequence type="audio">picture_open.mp3</Consequence>
+            <Consequence type="location">6</Consequence>
+        </Event>
+        <Event shape="default">
+            <Description>Return to whole room view</Description>
+            <Consequence type="location">1</Consequence>
+        </Event>
+    </Location>
+    <Location id="5">
         <Description>Goal</Description>
         <Image>goal.svg</Image>
+    </Location>
+    <Location id="6">
+        <Description>Upper Picture Open</Description>
+        <Image>upper_open.jpg</Image>
+        <Item id="1" sx="210" sy="0" swidth="70" sheight="70" x="80" y="142" width="86" height="86">
+            <Description>Gold Key</Description>
+            <Image>items.svg</Image>
+        </Item>
+        <Event shape="rect" coords="80,172,166,197">
+            <Description>Pick up the key</Description>
+            <!-- The key must be in its original location. -->
+            <Prerequisite type="item" itemid="1">6</Prerequisite>
+            <!-- The player (location 0) acquires the key. -->
+            <Consequence type="item" itemid="1">0</Consequence>
+            <Consequence type="message">You picked up a gold key.</Consequence>
+        </Event>
+        <!-- The default event must follow all other events at the location. -->
+        <Event shape="default">
+            <Description>Return to whole room view</Description>
+            <Consequence type="audio">picture_close.mp3</Consequence>
+            <Consequence type="location">1</Consequence>
+        </Event>
     </Location>
 </PncGame>
