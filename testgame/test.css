@@ -1,0 +1,51 @@
+/*
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2019
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+Please read LICENSE, on Github, for more information.
+
+To see the demo in action, visit http://www.purdone.com/dave/pncgame/.
+*/
+
+body
+{
+    background-color: black;
+}
+
+h1, p
+{
+    text-align: center;
+    color: white;
+}
+
+canvas
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+    background-color: gray;
+}
+
+#inventory_window
+{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 70px;
+    width: 250px;
+    color: white;
+    background-color: gray;
+    margin-top: 5mm;
+}
+
+div.item_inventory
+{
+    border-right: solid thin #616161;
+    background-repeat: no-repeat;
+    background-color: #6E6E6E;
+    float: left;
+    width: 70px;
+    height: 70px;
+}
+

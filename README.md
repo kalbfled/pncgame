@@ -1,10 +1,10 @@
-pncgame.js and related files  
-([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)) David J. Kalbfleisch 2015  
-https://github.com/kalbfled/pncgame
+# pncgame.js
 
-This software implements a simple, client-side, point-and-click game engine using JavaScript and other standard web technologies.  For a brief demonstration, please visit http://www.purdone.com/dave/pncgame/.
+## Introduction
 
-See testgame/test.html for an example of how to instantiate a game in a webpage.  A game essentially is a graph where the nodes are "locations" with corresponding images, and edges are "events" the player can initiate by clicking within the game window.  An event will only be available if "prerequisites" are met, and executing an event will have "consequences."  A terminal or goal state is any location with no available events.  See the [wiki](https://github.com/kalbfled/pncgame/wiki) for a summary of currently supported prerequisites and consequences.
+pncgame.js is a simple, client-side, point-and-click game engine using standard web technologies.  For a brief demonstration, please visit http://www.purdone.com/dave/pncgame/ using a browser that supports JavaScript modules (i.e. not IE).
+
+See testgame/index.html for an example of how to instantiate a game in a webpage.  A game essentially is a graph where the nodes are "locations" with corresponding images, and edges are "events" the player can initiate by clicking within the game window.  An event will only be available if "prerequisites" are met, and executing an event will have "consequences."  A terminal or goal state is any location with no available events.  See the [wiki](https://github.com/kalbfled/pncgame/wiki) for a summary of currently supported prerequisites and consequences.
 
 Note that the JavaScript uses features, such as the [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) method, that might not be available in older browsers.  I do not intend to add legacy support.
 
@@ -15,3 +15,11 @@ If you create an interesting game, [let me know](http://www.purdone.com/dave/con
 
 Dave  
 13 September 2015
+
+Last updated: 12 July 2019
+
+## Running the Test Game Locally With Python3
+
+In the top level directory, "pncgame", run "python3 -m http.server", and open http://0.0.0.0:8000/testgame/.  You will need to grab the images and audio from the live demo, or replace
+it with your own resources.
+

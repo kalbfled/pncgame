@@ -1,44 +1,44 @@
 /*
-(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015, 2019
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 https://github.com/kalbfled/pncgame
 Please read LICENSE, on Github, for more information.
 
-This code implements the PointAndClickGame object prototype.  You should minify it for
-production: http://www.sundgaard.dk/javascript-minify.aspx.
-
-TODO - ECMAScript6 modularity and class syntactic sugar when they become well supported
+This code implements the PointAndClickGame object prototype.
 */
 
 "use strict";
+import { Inventory } from "./pncinventory.js";
+import { Item } from "./pncitem.js";
+import { Location } from "./pnclocation.js";
+
 
 function PointAndClickGame(
-        canvas,                    // A "canvas" element on which to display the game and items
-        message_buffer_element,    // An HTML text object of any variety (p, h1, etc.)
-        initial_message,           // A string; the initial value of the message buffer
-        audio_source_fx,           // An HTML "source" element specifying audio for sound effects
-        initial_items,             // initial items to populate the player's inventory; can be null
-        inventory_window,          // A "div" element that will hold child "div" elements representing
-                                   //     the items in the inventory
-        item_inventory_class,      // A CSS class to assign to all item "div" elements drawn in the
-                                   //     inventory window; a string
-        active_item_background_color,   // A string; Highlight color for the active item in the inventory window, if any
-        extensions                 // A list of lambda functions to extend functionality; for example, this could
-                                   //    be used to populate an on-screen list of items in the player's inventory.
-    ) {
+        canvas,                        // A "canvas" element on which to display the game and items
+        message_buffer_element,        // An HTML text object of any variety (p, h1, etc.)
+        initial_message,               // A string; the initial value of the message buffer
+        audio_source_fx,               // An HTML "source" element specifying audio for sound effects
+        initial_items,                 // initial items to populate the player's inventory; can be null
+        inventory_window,              // A "div" element that will hold child "div" elements representing the items in the inventory
+        item_inventory_class,          // A CSS class to assign to all item "div" elements drawn in the inventory window; a string
+        active_item_background_color,  // A string; Highlight color for the active item in the inventory window, if any
+        extensions                     // A list of lambda functions to extend functionality; for example, this could
+                                       //     be used to populate an on-screen list of items in the player's inventory.
+    )
+/*
+Object prototype for a point-and-click game, which is a graph where nodes are states/locations
+and edges are events/actions the player can take.  Every action has zero or more
+prerequisites, such as the player having certain items in his or her inventory.  A game ends
+when the player reaches the goal state/location.  There is no goal test; a goal state is
+any state with no actions.
+*/
+{
+    this.fromXML = function(xmlfile)
     /*
-    Object prototype for a point-and-click game, which is a graph where nodes are states/locations
-    and edges are events/actions the player can take.  Every action has zero or more
-    prerequisites, such as the player having certain items in his or her inventory.  A game ends
-    when the player reaches the goal state/location.  There is no goal test; a goal state is
-    any state with no actions.
+    Populate the object according to an XML file conforming to pncgame.xsd.
+    xmlfile - Path to the XML file; a string
     */
-    this.fromXML = function(xmlfile) {
-        /*
-        Populate the object according to an XML file conforming to pncgame.xsd.
-        xmlfile - Path to the XML file; a string
-        */
-
+    {
         // Parse the XML file
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open("GET", xmlfile, false);    // TODO - Synchronous XMLHttpRequest is deprecated
@@ -47,17 +47,19 @@ function PointAndClickGame(
 
         // Get the game's title, if specified
         var title_element = xml.getElementsByTagName("Title")[0];
-        if (title_element) {
+        if (title_element)
             this.title = title_element.childNodes[0].nodeValue;
-        }
 
         // Populate initial inventory
         var player_inventory_element = xml.getElementsByTagName("PlayerInventory")[0];
-        if (player_inventory_element) {
+        if (player_inventory_element)
+        {
             var l = player_inventory_element.childNodes.length;
-            for (var i=0; i < l; i++) {
+            for (var i=0; i < l; i++)
+            {
                 var child_node = player_inventory_element.childNodes.item(i);
-                if (child_node.nodeName == "Item") {
+                if (child_node.nodeName == "Item")
+                {
                     var item = new Item('', '', '', '', '', '', '', '', '');
                     item.fromXML(child_node);
                     this.player_inventory.add(item);
@@ -313,4 +315,7 @@ function PointAndClickGame(
         }
     });
 }
+
+
+export { PointAndClickGame };
 

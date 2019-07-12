@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<!--
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015, 2019
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+https://github.com/kalbfled/pncgame
+Please read LICENSE, on Github, for more information.
+
+This demo references untracked image and audio resources.
+To see the demo in action, visit http://www.purdone.com/dave/pncgame/.
+-->
+
+<html lang="en-us">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="description" content="Demo of a point-and-click game engine.">
+    <meta name="keywords" content="game, engine, point, click">
+    <link rel="stylesheet" type="text/css" href="test.css">
+    <title>Point and Click Game Test</title>
+
+    <!--
+    Preload image and audio resources to avoid lag during game play.
+    This method is inappropriate for a non-trivial example.
+        http://qnimate.com/preloading-resources-in-browser/
+    -->
+    <link rel="prefetch" href="testroom.jpg">
+    <link rel="prefetch" href="left.jpg">
+    <link rel="prefetch" href="right.jpg">
+    <link rel="prefetch" href="upper_closed.jpg">
+    <link rel="prefetch" href="upper_open.jpg">
+    <link rel="prefetch" href="goal.svg">
+    <!-- items.svg is a sprite sheet - http://www.w3schools.com/css/css_image_sprites.asp -->
+    <link rel="prefetch" href="items.svg">
+    <link rel="prefetch" href="door_locked.mp3">
+    <link rel="prefetch" href="door_open.mp3">
+    <link rel="prefetch" href="picture_open.mp3">
+    <link rel="prefetch" href="picture_close.mp3">
+</head>
+
+<body>
+<h1>Single Room Test</h1>
+<p>pncgame.js (CC BY-NC-SA 4.0) David J. Kalbfleisch 2015, 2019 (<a href="https://github.com/kalbfled/pncgame">Github</a>)</p>
+
+<!-- Draw the location and visible items on the canvas. -->
+<canvas id="game_canvas" height="300px" width="250px">
+    Your browser does not support the HTML5 canvas element.
+</canvas>
+
+<!-- Draw items as child divs of this div element -->
+<div id="inventory_window"></div>
+
+<p>You have clicked <span id="clicks">0</span> times.</p>
+<p id="messages">Display messages here.</p>
+
+<audio preload="none">
+    <source id="audio_fx" src="door_locked.mp3" type="audio/mpeg">
+Your browser does not support the HTML5 audio element.
+</audio>
+
+<script type="module">
+    "use strict";
+    import { PointAndClickGame } from "../js/pncgame.js"
+
+    // Define an extension function that will execute every update cycle.
+    // TODO - What if my extension functions need to access the game object?  I'm declaring it before the game.
+    var click_count = 0;
+    function showCount()
+    {
+        // Display the number of update cycles that have occurred.
+        document.getElementById("clicks").innerHTML = ++click_count;
+    }
+
+    // Initialize the game
+    var game = new PointAndClickGame(
+        document.getElementById("game_canvas"),         // Game canvas for drawing items and the location
+        document.getElementById("messages"),            // Message buffer element
+        "Your goal is to exit the room.",               // Initial message
+        document.getElementById("audio_fx"),            // "source" element for fx audio
+        null,                                           // Initial items; null here because this is specified via xml
+        document.getElementById("inventory_window"),    // Inventory display window
+        "item_inventory",                               // Item inventory class
+        "#5594AC",                                      // Active item background color
+        [showCount]                                     // Array of extension functions
+    );
+    game.fromXML("test.xml");
+
+    // Define the custom consequence function to execute when the user clicks on the door.
+    function clickOnDoorConsequence()
+    /*
+    When the player clicks on the door, there are three possible outcomes.
+    The player uses either no key, the wrong key, or the correct key.
+
+    TODO - Items interacting with the environment is a common use case.  It should not require customization.
+    */
+    {
+        var fx = game.audio_source_fx; // Convenience variable; an HTML5 audio "source" element
+        var play_sound = false;
+        switch (game.active_item)
+        {
+            case 1:     // Correct key
+                game.message_buffer += "You unlocked the door with the gold key and exited the room.  YOU WIN!";
+                game.player_location = 5;
+                fx.src = "door_open.mp3";
+                play_sound = true;
+                game.redraw_needed = true;
+                break;
+            case 2:     // Wrong key
+                game.message_buffer += "The copper key doesn't fit the lock.";
+                break;
+            default:    // No key (includes padlock)
+                game.message_buffer += "The door is locked.";
+                fx.src = "door_locked.mp3";
+                play_sound = true;
+                break;
+        }
+
+        if (play_sound)
+        {
+            fx.parentNode.load();
+            if (!fx.parentNode.autoplay)
+                fx.parentNode.play();
+        }
+    }
+    // Override the default custom consequence function, which only throws an exception.
+    game.locations[1].events[3].consequences[0] = clickOnDoorConsequence;
+
+    // Define the custom interaction function to execute when the user clicks on the padlock with the copper key.
+    var padlock = game.player_inventory.getItem(3);
+    function useCopperKeyOnPadlock()
+    /*
+    If the padlock is locked, unlock it.  If it is already unlocked, just display
+    a message.
+    */
+    {
+        if (padlock.description == "Locked Padlock")
+        {
+            // The padlock is locked
+            padlock.description = "Unlocked Padlock";
+            // Change the item's image to the unlocked padlock.  This is not strictly
+            // necessary for the demo because the padlock is never drawn in the game window.
+            padlock.sx = 70;
+            game.message_buffer += "You used the copper key to unlock the padlock.";
+            // Update the item's image in the inventory window
+            var item_div = document.getElementById("item3");
+            item_div.style.backgroundPosition = "-70px 0px";
+            item_div.setAttribute("title", "Unlocked Padlock");
+        }
+        else
+            game.message_buffer += "The padlock is already unlocked.";
+    }
+    // Override the default interaction function, which only throws an exception.
+    padlock.interactions[2] = useCopperKeyOnPadlock;
+
+    // The player begins the game in possession of a key and locked padlock.  Draw them in the inventory window.
+    game.drawPlayerInventory();
+
+    // Start the game
+    game.update();
+</script>
+</body>
+
+</html>
+

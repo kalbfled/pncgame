@@ -1,13 +1,10 @@
 /*
-(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015
+(CC BY-NC-SA 4.0) David J. Kalbfleisch 2015, 2019
 https://creativecommons.org/licenses/by-nc-sa/4.0/
 https://github.com/kalbfled/pncgame
 Please read LICENSE, on Github, for more information.
 
-This code implements the Item object prototype.  You should minify it for production:
-http://www.sundgaard.dk/javascript-minify.aspx.
-
-TODO - ECMAScript6 modularity and class syntactic sugar when they become well supported
+This code implements the Item object prototype.
 
 TODO - Item graphics from sprite sheet instead of single image file
 */
@@ -130,3 +127,7 @@ function Item(id, description, image_path, sx, sy, swidth, sheight, x, y, width,
     */
     this.interactions = {};
 }
+
+
+export { Item };
+
